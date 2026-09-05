@@ -1,0 +1,74 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>Bill Details</h3>
+
+</div>
+
+<div class="card-body">
+
+<p><b>Patient :</b> {{ bill.patient }}</p>
+
+<p><b>Doctor :</b> {{ bill.doctor }}</p>
+
+<p><b>Consultation :</b> ₹ {{ bill.consultation_fee }}</p>
+
+<p><b>Medicine :</b> ₹ {{ bill.medicine_charge }}</p>
+
+<p><b>Tests :</b> ₹ {{ bill.test_charge }}</p>
+
+<p><b>Other :</b> ₹ {{ bill.other_charge }}</p>
+
+<hr>
+
+<h4>Total : ₹ {{ bill.total_amount }}</h4>
+
+<p>
+    <b>Payment Status :</b>
+    {% if bill.payment_status == "Paid" %}
+        <span class="badge bg-success">Paid</span>
+    {% else %}
+        <span class="badge bg-warning text-dark">Pending</span>
+    {% endif %}
+</p>
+
+<p><b>Date :</b> {{ bill.bill_date }}</p>
+
+{% if email_error %}
+<div class="alert alert-warning">{{ email_error }}</div>
+{% endif %}
+
+{% if bill.payment_status != "Paid" %}
+<a href="{% url 'pay_bill' bill.id %}" class="btn btn-warning">
+    <i class="bi bi-credit-card"></i> Pay Now
+</a>
+{% endif %}
+
+<a href="{% url 'download_bill_pdf' bill.id %}"
+   class="btn btn-success">
+    Download PDF
+</a>
+
+<a href="{% url 'email_bill_pdf' bill.id %}"
+   class="btn btn-outline-primary">
+    <i class="bi bi-envelope-fill"></i> Email Bill
+</a>
+
+<a href="{% url 'bill_list' %}" class="btn btn-primary">
+Back
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

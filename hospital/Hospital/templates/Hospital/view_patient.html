@@ -1,0 +1,533 @@
+{% extends 'Hospital/base.html' %}
+
+{% block page_title %}
+Patients
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Page Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-people-fill text-primary"></i>
+                All Patients
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage all registered patients
+            </p>
+
+        </div>
+
+        <div>
+
+            <a href="{% url 'add_patient' %}"
+               class="btn btn-success">
+
+                <i class="bi bi-person-plus-fill"></i>
+
+                Add Patient
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill fs-1 text-primary"></i>
+
+                    <h5 class="mt-3">
+                        Total Patients
+                    </h5>
+
+                    <h2>
+                        {{ patients.paginator.count }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-hospital-fill fs-1 text-success"></i>
+
+                    <h5 class="mt-3">
+                        Admitted
+                    </h5>
+
+                    <h2 class="text-success">
+
+                        {{ admitted|default:"0" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-check-circle-fill fs-1 text-danger"></i>
+
+                    <h5 class="mt-3">
+                        Discharged
+                    </h5>
+
+                    <h2 class="text-danger">
+
+                        {{ discharged|default:"0" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-badge-fill fs-1 text-warning"></i>
+
+                    <h5 class="mt-3">
+
+                        Doctors
+
+                    </h5>
+
+                    <h2>
+
+                        {{ total_doctors|default:"0" }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="GET"
+                  action="{% url 'search_patient' %}">
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ query|default:'' }}"
+                        class="form-control"
+                        placeholder="Search patient by name...">
+
+                    <select name="status" class="form-select" style="max-width:160px;">
+                        <option value="">All Status</option>
+                        <option value="Admitted" {% if status_filter == "Admitted" %}selected{% endif %}>Admitted</option>
+                        <option value="Discharged" {% if status_filter == "Discharged" %}selected{% endif %}>Discharged</option>
+                    </select>
+
+                    <select name="gender" class="form-select" style="max-width:150px;">
+                        <option value="">All Genders</option>
+                        <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if gender_filter == "Other" %}selected{% endif %}>Other</option>
+                    </select>
+
+                    <button
+                        class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Patient Table -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-table"></i>
+
+                Patient List
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Photo</th>
+
+                            <th>Name</th>
+
+                            <th>Age</th>
+
+                            <th>Gender</th>
+
+                            <th>Disease</th>
+
+                            <th>Doctor</th>
+                            <th>Status</th>
+                            <th>Discharge Date</th>
+                            <th width="250">Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for p in patients %}
+                                        <tr>
+
+                            <td>
+                                <strong>#{{ p.id }}</strong>
+                            </td>
+
+                            <td>
+
+                                {% if p.photo %}
+
+                                    <img src="{{ p.photo.url }}"
+                                         class="rounded-circle border"
+                                         width="60"
+                                         height="60"
+                                         style="object-fit:cover;">
+
+                                {% else %}
+
+                                    <img src="https://via.placeholder.com/60?text=No+Photo"
+                                         class="rounded-circle border">
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <strong>{{ p.name }}</strong>
+
+                            </td>
+
+                            <td>
+
+                                {{ p.age }}
+
+                            </td>
+
+                            <td>
+
+                                {{ p.gender }}
+
+                            </td>
+
+                            <td>
+
+                                {{ p.disease }}
+
+                            </td>
+
+                            <td>
+
+                                {{ p.doctor }}
+
+                            </td>
+
+                            <td>
+
+                                {% if p.status == "Admitted" %}
+
+                                    <span class="badge bg-success">
+
+                                        Admitted
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Discharged
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if p.discharge_date %}
+
+                                    {{ p.discharge_date|date:"d-m-Y" }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <div class="btn-group">
+
+                                    <a href="{% url 'patient_detail' p.id %}"
+                                       class="btn btn-info btn-sm">
+
+                                        <i class="bi bi-eye-fill"></i>
+
+                                    </a>
+
+                                    <a href="{% url 'update_patient' p.id %}"
+                                       class="btn btn-warning btn-sm">
+
+                                        <i class="bi bi-pencil-fill"></i>
+
+                                    </a>
+
+                                    <a href="{% url 'delete_patient' p.id %}"
+                                       class="btn btn-danger btn-sm">
+
+                                        <i class="bi bi-trash-fill"></i>
+
+                                    </a>
+
+                                    {% if p.status == "Admitted" %}
+
+                                    <a href="{% url 'discharge_patient' p.id %}"
+                                       class="btn btn-success btn-sm">
+
+                                        <i class="bi bi-box-arrow-right"></i>
+
+                                    </a>
+
+                                    {% else %}
+
+                                    <a href="{% url 'discharge_summary_pdf' p.id %}"
+                                       class="btn btn-outline-dark btn-sm" title="Discharge Summary PDF">
+
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+
+                                    </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="10" class="text-center py-5">
+
+                                <i class="bi bi-person-x-fill fs-1 text-muted"></i>
+
+                                <h4 class="mt-3">
+
+                                    No Patients Found
+
+                                </h4>
+
+                                <p class="text-muted">
+
+                                    Click the <strong>Add Patient</strong> button to register your first patient.
+
+                                </p>
+
+                                <a href="{% url 'add_patient' %}"
+                                   class="btn btn-success">
+
+                                    <i class="bi bi-person-plus-fill"></i>
+
+                                    Add Patient
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Pagination -->
+
+    {% if patients.has_other_pages %}
+
+    <div class="card border-0 shadow-sm mt-4">
+
+        <div class="card-body">
+
+            <nav>
+
+                <ul class="pagination justify-content-center mb-0">
+
+                    {% if patients.has_previous %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page=1">
+
+                            First
+
+                        </a>
+
+                    </li>
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page={{ patients.previous_page_number }}">
+
+                            Previous
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            Page {{ patients.number }}
+                            of
+                            {{ patients.paginator.num_pages }}
+
+                        </span>
+
+                    </li>
+
+                    {% if patients.has_next %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page={{ patients.next_page_number }}">
+
+                            Next
+
+                        </a>
+
+                    </li>
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page={{ patients.paginator.num_pages }}">
+
+                            Last
+
+                        </a>
+
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const search = document.querySelector("input[name='q']");
+
+    if(search){
+
+        search.focus();
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

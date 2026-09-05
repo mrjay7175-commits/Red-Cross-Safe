@@ -1,0 +1,676 @@
+{% extends 'Hospital/base.html' %}
+
+{% block page_title %}
+Settings
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- ==========================
+             PROFILE CARD
+        =========================== -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-body text-center">
+
+                    <img
+                        src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=ffffff&size=220"
+                        class="rounded-circle shadow mb-3"
+                        width="150"
+                        height="150"
+                    >
+
+                    <h3 class="fw-bold">
+                        {{ user.username }}
+                    </h3>
+
+                    <p class="text-muted">
+
+                        {% if user.email %}
+                            {{ user.email }}
+                        {% else %}
+                            admin@hospital.com
+                        {% endif %}
+
+                    </p>
+
+                    <hr>
+
+                    <div class="d-grid gap-2">
+
+                        <a href="{% url 'edit_profile' %}"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-pencil-square"></i>
+
+                            Edit Profile
+
+                        </a>
+
+                        <a href="{% url 'change_password' %}"
+                           class="btn btn-outline-danger">
+
+                            <i class="bi bi-key-fill"></i>
+
+                            Change Password
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ACCOUNT DETAILS -->
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-info text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-person-circle"></i>
+
+                        Account Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <th>Username</th>
+
+                            <td>{{ user.username }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Email</th>
+
+                            <td>{{ user.email }}</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Status</th>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    Active
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ==========================
+             RIGHT SIDE
+        =========================== -->
+
+        <div class="col-lg-8">
+
+            <!-- SYSTEM INFO -->
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-cpu-fill"></i>
+
+                        System Information
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <strong>Application</strong>
+
+                            <p class="mb-0">
+
+                                Hospital Management System
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <strong>Version</strong>
+
+                            <p class="mb-0">
+
+                                Version 5.0 Professional
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <strong>Developer</strong>
+
+                            <p class="mb-0">
+
+                                Jayprakash Kumar Singh
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <strong>Server Status</strong>
+
+                            <p>
+
+                                <span class="badge bg-success">
+
+                                    Running
+
+                                </span>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- APPEARANCE -->
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-header bg-dark text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-palette-fill"></i>
+
+                        Appearance
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-check form-switch mb-3">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="darkModeSwitch"
+                            onclick="toggleDarkMode()"
+                        >
+
+                        <label
+                            class="form-check-label"
+                            for="darkModeSwitch">
+
+                            Enable Dark Mode
+
+                        </label>
+
+                    </div>
+
+                    <label class="form-label">
+
+                        Theme Color
+
+                    </label>
+
+                    <select
+                        class="form-select"
+                        id="themeColor">
+
+                        <option value="blue">
+
+                            Blue
+
+                        </option>
+
+                        <option value="green">
+
+                            Green
+
+                        </option>
+
+                        <option value="purple">
+
+                            Purple
+
+                        </option>
+
+                        <option value="red">
+
+                            Red
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+                    <!-- ==========================
+                 NOTIFICATION SETTINGS
+            =========================== -->
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-header bg-warning">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-bell-fill"></i>
+
+                        Notification Settings
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="form-check form-switch mb-3">
+
+                            {{ form.email_notification }}
+
+                            <label class="form-check-label">
+
+                                Email Notification
+
+                            </label>
+
+                        </div>
+
+                        <div class="form-check form-switch mb-3">
+
+                            {{ form.sms_notification }}
+
+                            <label class="form-check-label">
+
+                                SMS Notification
+
+                            </label>
+
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+
+                            {{ form.desktop_notification }}
+
+                            <label class="form-check-label">
+
+                                Desktop Notification
+
+                            </label>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Save Notification Settings
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- ==========================
+                 DATA MANAGEMENT
+            =========================== -->
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-database-fill"></i>
+
+                        Data Management
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <a href="{% url 'backup_database' %}"
+                               class="btn btn-success w-100">
+
+                                <i class="bi bi-download"></i>
+
+                                Backup Database
+
+                            </a>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <a href="{% url 'export_patients_excel' %}"
+                               class="btn btn-primary w-100">
+
+                                <i class="bi bi-file-earmark-excel-fill"></i>
+
+                                Export Patients
+
+                            </a>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <a href="{% url 'export_doctors_excel' %}"
+                               class="btn btn-info text-white w-100">
+
+                                <i class="bi bi-file-earmark-excel-fill"></i>
+
+                                Export Doctors
+
+                            </a>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <a href="{% url 'bill_list' %}"
+                               class="btn btn-danger w-100">
+
+                                <i class="bi bi-receipt-cutoff"></i>
+
+                                Manage Bills
+
+                            </a>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary w-100"
+                                disabled>
+
+                                <i class="bi bi-upload"></i>
+
+                                Restore Database
+                                <br>
+                                <small>(Coming Soon)</small>
+
+                            </button>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <button
+                                type="button"
+                                class="btn btn-dark w-100"
+                                disabled>
+
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+
+                                Export Bills PDF
+                                <br>
+                                <small>(Coming Soon)</small>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+                    <!-- ==========================
+                 QUICK ACTIONS
+            =========================== -->
+
+            <div class="card shadow-lg border-0 mb-4">
+
+                <div class="card-header bg-secondary text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                        Quick Actions
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="d-grid gap-3">
+
+                        <a href="{% url 'dashboard' %}"
+                           class="btn btn-outline-primary">
+
+                            <i class="bi bi-speedometer2"></i>
+
+                            Dashboard
+
+                        </a>
+
+                        <a href="{% url 'reports' %}"
+                           class="btn btn-outline-success">
+
+                            <i class="bi bi-bar-chart-fill"></i>
+
+                            Reports
+
+                        </a>
+
+                        <a href="{% url 'view_patient' %}"
+                           class="btn btn-outline-info">
+
+                            <i class="bi bi-people-fill"></i>
+
+                            Manage Patients
+
+                        </a>
+
+                        <a href="{% url 'doctor_list' %}"
+                           class="btn btn-outline-warning">
+
+                            <i class="bi bi-person-badge-fill"></i>
+
+                            Manage Doctors
+
+                        </a>
+
+                        <a href="{% url 'logout' %}"
+                           class="btn btn-outline-danger">
+
+                            <i class="bi bi-box-arrow-right"></i>
+
+                            Logout
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ==========================
+                 SYSTEM SUMMARY
+            =========================== -->
+
+            <div class="card shadow-lg border-0">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-info-circle-fill"></i>
+
+                        System Summary
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row text-center">
+
+                        <div class="col-md-3">
+
+                            <h3 class="text-primary">
+
+                                {{ total_patients|default:"0" }}
+
+                            </h3>
+
+                            <small>Total Patients</small>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <h3 class="text-success">
+
+                                {{ total_doctors|default:"0" }}
+
+                            </h3>
+
+                            <small>Total Doctors</small>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <h3 class="text-warning">
+
+                                {{ total_bills|default:"0" }}
+
+                            </h3>
+
+                            <small>Total Bills</small>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <h3 class="text-danger">
+
+                                ₹{{ total_revenue|default:"0" }}
+
+                            </h3>
+
+                            <small>Total Revenue</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleDarkMode(){
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+
+        localStorage.setItem("theme","dark");
+
+    }else{
+
+        localStorage.setItem("theme","light");
+
+    }
+
+}
+
+window.addEventListener("load",function(){
+
+    if(localStorage.getItem("theme")==="dark"){
+
+        document.body.classList.add("dark-mode");
+
+        let sw=document.getElementById("darkModeSwitch");
+
+        if(sw){
+
+            sw.checked=true;
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

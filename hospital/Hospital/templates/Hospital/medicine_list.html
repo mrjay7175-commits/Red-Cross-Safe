@@ -1,0 +1,98 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Medicines</h2>
+
+        <a href="{% url 'add_medicine' %}" class="btn btn-primary">
+            + Add Medicine
+        </a>
+    </div>
+
+    {% if low_stock_count > 0 %}
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ low_stock_count }} medicine{{ low_stock_count|pluralize }} at or below reorder level - restock soon.</div>
+    </div>
+    {% endif %}
+
+    {% if expiring_count > 0 %}
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <i class="bi bi-calendar-x-fill me-2"></i>
+        <div>{{ expiring_count }} medicine{{ expiring_count|pluralize }} expiring within 30 days.</div>
+    </div>
+    {% endif %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Expiry</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for medicine in medicines %}
+
+        <tr {% if medicine.is_low_stock or medicine.is_expiring_soon or medicine.is_expired %}class="table-warning"{% endif %}>
+
+            <td>{{ medicine.id }}</td>
+            <td>{{ medicine.name }}
+                {% if medicine.is_low_stock %}<span class="badge bg-danger">Low Stock</span>{% endif %}
+                {% if medicine.is_expired %}<span class="badge bg-dark">Expired</span>
+                {% elif medicine.is_expiring_soon %}<span class="badge bg-warning text-dark">Expiring Soon</span>{% endif %}
+            </td>
+            <td>{{ medicine.company }}</td>
+            <td>{{ medicine.category }}</td>
+            <td>₹ {{ medicine.price }}</td>
+            <td>{{ medicine.quantity }} <small class="text-muted">/ reorder at {{ medicine.reorder_level }}</small></td>
+            <td>{{ medicine.expiry_date }}</td>
+
+            <td>
+
+                <a href="{% url 'medicine_detail' medicine.id %}" class="btn btn-info btn-sm">
+                    View
+                </a>
+
+                <a href="{% url 'update_medicine' medicine.id %}" class="btn btn-warning btn-sm">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete_medicine' medicine.id %}" class="btn btn-danger btn-sm">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="8" class="text-center">
+                No Medicines Available
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

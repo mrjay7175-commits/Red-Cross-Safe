@@ -1,0 +1,226 @@
+{% extends "Hospital/base.html" %}
+
+{% block title %}Prescription Details{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h3>Prescription Details</h3>
+
+                <div>
+
+                    <a href="{% url 'edit_prescription' prescription.id %}" class="btn btn-warning">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'delete_prescription' prescription.id %}" class="btn btn-danger">
+                        Delete
+                    </a>
+
+                    <button onclick="window.print()" class="btn btn-success">
+                        Print
+                    </button>
+
+                    <a href="{% url 'prescription_pdf' prescription.id %}" class="btn btn-primary">
+                        Download PDF
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <h2 class="text-center mb-4">
+                🏥 Hospital Prescription
+            </h2>
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="220">Prescription ID</th>
+                    <td>{{ prescription.prescription_id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Patient ID</th>
+                    <td>{{ prescription.patient.patient_id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Patient Name</th>
+                    <td>{{ prescription.patient.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Doctor ID</th>
+                    <td>{{ prescription.doctor.doctor_id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Doctor Name</th>
+                    <td>{{ prescription.doctor.name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Visit Date</th>
+                    <td>{{ prescription.visit_date }}</td>
+                </tr>
+
+                <tr>
+                    <th>Diagnosis</th>
+                    <td>{{ prescription.diagnosis }}</td>
+                </tr>
+
+                <tr>
+                    <th>Symptoms</th>
+                    <td>{{ prescription.symptoms|default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Blood Pressure</th>
+                    <td>{{ prescription.blood_pressure|default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Pulse</th>
+                    <td>{{ prescription.pulse|default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Temperature</th>
+                    <td>{{ prescription.temperature|default:"-" }} °C</td>
+                </tr>
+
+                <tr>
+                    <th>Weight</th>
+                    <td>{{ prescription.weight|default:"-" }} kg</td>
+                </tr>
+
+                <tr>
+                    <th>Notes</th>
+                    <td>{{ prescription.notes|default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th>Follow-up Date</th>
+                    <td>{{ prescription.follow_up_date|default:"-" }}</td>
+                </tr>
+
+            </table>
+
+            <hr>
+
+            <h3 class="mb-3">
+                Prescribed Medicines
+            </h3>
+
+            <table class="table table-bordered table-striped">
+
+                <thead class="table-dark">
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Medicine</th>
+                    <th>Dosage</th>
+                    <th>Morning</th>
+                    <th>Afternoon</th>
+                    <th>Night</th>
+                    <th>Days</th>
+                    <th>Instruction</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for item in prescription.items.all %}
+
+                <tr>
+
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ item.medicine.name }}</td>
+
+                    <td>{{ item.dosage }}</td>
+
+                    <td>{% if item.morning %}✔{% else %}✖{% endif %}</td>
+
+                    <td>{% if item.afternoon %}✔{% else %}✖{% endif %}</td>
+
+                    <td>{% if item.night %}✔{% else %}✖{% endif %}</td>
+
+                    <td>{{ item.days }}</td>
+
+                    <td>{{ item.instruction }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="8" class="text-center">
+
+                        No Medicines Added
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <hr>
+
+            <div class="row mt-5">
+
+                <div class="col-md-6">
+
+                    <strong>Doctor Signature</strong>
+
+                    <br><br><br>
+
+                    _______________________
+
+                </div>
+
+                <div class="col-md-6 text-end">
+
+                    <strong>Hospital Seal</strong>
+
+                    <br><br><br>
+
+                    _______________________
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <a href="{% url 'prescription_list' %}" class="btn btn-secondary">
+                Back to List
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

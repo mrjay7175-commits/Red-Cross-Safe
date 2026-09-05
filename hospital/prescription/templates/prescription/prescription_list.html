@@ -1,0 +1,121 @@
+{% extends "Hospital/base.html" %}
+
+{% block title %}Prescription List{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Prescription List</h2>
+
+        <a href="{% url 'add_prescription' %}" class="btn btn-primary">
+            + New Prescription
+        </a>
+    </div>
+
+    <form method="GET" class="row mb-3">
+        <div class="col-md-6">
+            <input
+                type="text"
+                class="form-control"
+                name="q"
+                placeholder="Search Patient / Doctor / Prescription ID"
+                value="{{ request.GET.q }}"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-success w-100">
+                Search
+            </button>
+        </div>
+    </form>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Patient</th>
+
+                        <th>Doctor</th>
+
+                        <th>Visit Date</th>
+
+                        <th>Diagnosis</th>
+
+                        <th width="220">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for prescription in prescriptions %}
+
+                    <tr>
+
+                        <td>{{ prescription.prescription_id }}</td>
+
+                        <td>{{ prescription.patient }}</td>
+
+                        <td>{{ prescription.doctor }}</td>
+
+                        <td>{{ prescription.visit_date }}</td>
+
+                        <td>{{ prescription.diagnosis }}</td>
+
+                        <td>
+
+                            <a
+                                href="{% url 'prescription_detail' prescription.id %}"
+                                class="btn btn-info btn-sm">
+                                View
+                            </a>
+
+                            <a
+                                href="{% url 'edit_prescription' prescription.id %}"
+                                class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <a
+                                href="{% url 'delete_prescription' prescription.id %}"
+                                class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+                            No Prescription Found
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

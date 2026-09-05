@@ -1,0 +1,17 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h3>Delete Branch</h3>
+            <p>Are you sure you want to delete <strong>{{ branch.name }}</strong>? Patients/doctors linked to it will simply become unassigned, not deleted.</p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="{% url 'branch_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

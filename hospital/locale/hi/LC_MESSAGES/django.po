@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-30 06:25+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: Hospital/templates/Hospital/base.html:83
+msgid "Dashboard"
+msgstr "डैशबोर्ड"
+
+#: Hospital/templates/Hospital/base.html:99
+msgid "Patients"
+msgstr "मरीज़"
+
+#: Hospital/templates/Hospital/base.html:117
+msgid "Doctors"
+msgstr "डॉक्टर"
+
+#: Hospital/templates/Hospital/base.html:134
+msgid "Appointments"
+msgstr "अपॉइंटमेंट"
+
+#: Hospital/templates/Hospital/base.html:148
+msgid "Prescriptions"
+msgstr "पर्चे"
+
+#: Hospital/templates/Hospital/base.html:166
+msgid "Billing"
+msgstr "बिलिंग"
+
+#: Hospital/templates/Hospital/base.html:184
+msgid "Medicines"
+msgstr "दवाइयाँ"
+
+#: Hospital/templates/Hospital/base.html:202
+msgid "Lab Tests"
+msgstr "लैब टेस्ट"
+
+#: Hospital/templates/Hospital/base.html:220
+msgid "Beds"
+msgstr "बेड"
+
+#: Hospital/templates/Hospital/base.html:238
+msgid "Ambulances"
+msgstr "एम्बुलेंस"
+
+#: Hospital/templates/Hospital/base.html:256
+msgid "Insurance Claims"
+msgstr "बीमा दावे"
+
+#: Hospital/templates/Hospital/base.html:274
+msgid "Calendar"
+msgstr "कैलेंडर"
+
+#: Hospital/templates/Hospital/base.html:292
+msgid "Branches"
+msgstr "शाखाएँ"
+
+#: Hospital/templates/Hospital/base.html:310
+msgid "Reports"
+msgstr "रिपोर्ट"
+
+#: Hospital/templates/Hospital/base.html:328
+msgid "Audit Log"
+msgstr "ऑडिट लॉग"
+
+#: Hospital/templates/Hospital/base.html:346
+msgid "Settings"
+msgstr "सेटिंग्स"

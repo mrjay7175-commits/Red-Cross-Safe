@@ -1,0 +1,45 @@
+{% extends 'Hospital/base.html' %}
+
+{% block page_title %}
+Update Patient
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning">
+
+            <h3>Update Patient - {{ patient.name }}</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                {% include 'Hospital/_photo_capture_widget.html' %}
+
+                <button type="submit" class="btn btn-success">
+                    Save Changes
+                </button>
+
+                <a href="{% url 'view_patient' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>Appointment Details</h3>
+
+</div>
+
+<div class="card-body">
+
+<p><b>Patient:</b> {{ appointment.patient }}</p>
+
+<p><b>Doctor:</b> {{ appointment.doctor }}</p>
+
+<p><b>Date:</b> {{ appointment.appointment_date }}</p>
+
+<p><b>Time:</b> {{ appointment.appointment_time }}</p>
+
+<p><b>Status:</b> {{ appointment.status }}</p>
+
+<p><b>Reason:</b> {{ appointment.reason }}</p>
+
+<a href="{% url 'appointment_list' %}" class="btn btn-primary">
+
+Back
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

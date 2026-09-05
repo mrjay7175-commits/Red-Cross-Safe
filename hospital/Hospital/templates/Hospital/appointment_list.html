@@ -1,0 +1,99 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Appointments</h2>
+
+        <a href="{% url 'add_appointment' %}" class="btn btn-primary">
+            + New Appointment
+        </a>
+
+    </div>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for appointment in appointments %}
+
+        <tr>
+
+            <td>{{ appointment.id }}</td>
+            <td>{{ appointment.patient }}</td>
+            <td>{{ appointment.doctor }}</td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.appointment_time }}</td>
+
+            <td>
+
+                {% if appointment.status == "Confirmed" %}
+                    <span class="badge bg-success">Confirmed</span>
+
+                {% elif appointment.status == "Pending" %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+
+                {% elif appointment.status == "Completed" %}
+                    <span class="badge bg-primary">Completed</span>
+
+                {% else %}
+                    <span class="badge bg-danger">Cancelled</span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-info btn-sm">
+                    View
+                </a>
+
+                <a href="{% url 'update_appointment' appointment.id %}" class="btn btn-warning btn-sm">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete_appointment' appointment.id %}" class="btn btn-danger btn-sm">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="7" class="text-center">
+                No Appointments Found
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

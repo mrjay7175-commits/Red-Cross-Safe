@@ -1,0 +1,63 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4" style="max-width:600px;">
+
+    <h2 class="mb-3"><i class="bi bi-qr-code-scan"></i> Patient Check-in</h2>
+
+    {% if not_found %}
+    <div class="alert alert-danger">No patient found for code "{{ not_found }}".</div>
+    {% endif %}
+
+    <div class="card mb-3">
+        <div class="card-body text-center">
+            <div id="reader" style="width:100%;"></div>
+            <p class="text-muted small mt-2">Point the camera at the patient's QR code. Needs camera permission in the browser.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Or enter Patient ID manually</div>
+        <div class="card-body">
+            <form method="GET" action="{% url 'checkin_lookup' %}" class="input-group">
+                <input type="text" name="patient_id" class="form-control" placeholder="e.g. PAT0001" required>
+                <button class="btn btn-primary">Check In</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+    function onScanSuccess(decodedText) {
+        try {
+            const url = new URL(decodedText);
+            window.location = url.pathname + url.search;
+        } catch (e) {
+            window.location = "{% url 'checkin_lookup' %}?patient_id=" + encodeURIComponent(decodedText);
+        }
+    }
+
+    if (typeof Html5Qrcode !== "undefined") {
+        const scanner = new Html5Qrcode("reader");
+        Html5Qrcode.getCameras().then(cameras => {
+            if (cameras && cameras.length) {
+                scanner.start(
+                    cameras[0].id,
+                    { fps: 10, qrbox: 220 },
+                    onScanSuccess
+                ).catch(() => {
+                    document.getElementById("reader").innerHTML =
+                        "<p class='text-muted'>Camera unavailable - use manual entry below.</p>";
+                });
+            }
+        }).catch(() => {
+            document.getElementById("reader").innerHTML =
+                "<p class='text-muted'>No camera found - use manual entry below.</p>";
+        });
+    }
+</script>
+
+{% endblock %}

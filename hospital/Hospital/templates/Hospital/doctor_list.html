@@ -1,0 +1,187 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>Doctors</h2>
+
+        <a href="{% url 'add_doctor' %}" class="btn btn-success">
+            + Add Doctor
+        </a>
+
+    </div>
+
+    <!-- Search -->
+
+    <form method="GET" action="{% url 'search_doctor' %}" class="mb-3">
+
+        <div class="input-group">
+
+            <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="Search Doctor">
+
+            <button class="btn btn-primary">
+                Search
+            </button>
+
+        </div>
+
+    </form>
+
+    <!-- Doctor Table -->
+
+    <table class="table table-bordered table-hover align-middle">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Photo</th>
+                <th>Doctor ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Qualification</th>
+                <th>Experience</th>
+                <th>Phone</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for doctor in doctors %}
+
+            <tr>
+
+                <td>
+
+                    {% if doctor.photo %}
+
+                        <img src="{{ doctor.photo.url }}"
+                             width="60"
+                             height="60"
+                             class="rounded-circle">
+
+                    {% else %}
+
+                        No Photo
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <span class="badge bg-primary">
+                        {{ doctor.doctor_id }}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a href="{% url 'doctor_detail' doctor.id %}">
+                        {{ doctor.name }}
+                    </a>
+
+                </td>
+
+                <td>{{ doctor.department }}</td>
+
+                <td>{{ doctor.qualification }}</td>
+
+                <td>{{ doctor.experience }} Years</td>
+
+                <td>{{ doctor.phone }}</td>
+
+                <td>
+
+                    <a href="{% url 'update_doctor' doctor.id %}"
+                       class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'delete_doctor' doctor.id %}"
+                       class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="8" class="text-center">
+
+                    No Doctors Found
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <!-- Pagination -->
+
+    <nav>
+
+        <ul class="pagination justify-content-center">
+
+            {% if doctors.has_previous %}
+
+            <li class="page-item">
+
+                <a class="page-link"
+                   href="?page={{ doctors.previous_page_number }}">
+                    Previous
+                </a>
+
+            </li>
+
+            {% endif %}
+
+            <li class="page-item active">
+
+                <span class="page-link">
+
+                    {{ doctors.number }}
+
+                </span>
+
+            </li>
+
+            {% if doctors.has_next %}
+
+            <li class="page-item">
+
+                <a class="page-link"
+                   href="?page={{ doctors.next_page_number }}">
+                    Next
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+</div>
+
+{% endblock %}

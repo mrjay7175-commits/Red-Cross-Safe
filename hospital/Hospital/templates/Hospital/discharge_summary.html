@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+
+body{
+font-family:Helvetica;
+font-size:13px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+table,th,td{
+border:1px solid black;
+}
+
+th,td{
+padding:6px;
+text-align:left;
+}
+
+h1,h2{
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Hospital Management System</h1>
+
+<h2>Discharge Summary</h2>
+
+<table>
+
+<tr>
+<th>Patient ID</th>
+<td>{{ patient.patient_id }}</td>
+</tr>
+
+<tr>
+<th>Name</th>
+<td>{{ patient.name }}</td>
+</tr>
+
+<tr>
+<th>Age / Gender</th>
+<td>{{ patient.age }} / {{ patient.gender }}</td>
+</tr>
+
+<tr>
+<th>Attending Doctor</th>
+<td>{{ patient.doctor }}</td>
+</tr>
+
+<tr>
+<th>Diagnosis</th>
+<td>{{ patient.disease }}</td>
+</tr>
+
+<tr>
+<th>Admission Date</th>
+<td>{{ patient.admission_date }}</td>
+</tr>
+
+<tr>
+<th>Discharge Date</th>
+<td>{{ patient.discharge_date|default:"-" }}</td>
+</tr>
+
+<tr>
+<th>Total Billed Amount</th>
+<td>₹ {{ total_billed }}</td>
+</tr>
+
+</table>
+
+<h3>Medical History During Stay</h3>
+
+{% if records %}
+<table>
+<tr>
+<th>Date</th>
+<th>Diagnosis</th>
+<th>Doctor</th>
+<th>Notes</th>
+</tr>
+{% for r in records %}
+<tr>
+<td>{{ r.record_date|date:"d-m-Y" }}</td>
+<td>{{ r.diagnosis }}</td>
+<td>{{ r.doctor|default:"-" }}</td>
+<td>{{ r.notes|default:"-" }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p>No additional medical records on file.</p>
+{% endif %}
+
+<h3>Bills</h3>
+
+{% if bills %}
+<table>
+<tr>
+<th>Bill #</th>
+<th>Date</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+{% for b in bills %}
+<tr>
+<td>{{ b.id }}</td>
+<td>{{ b.bill_date }}</td>
+<td>₹ {{ b.total_amount }}</td>
+<td>{{ b.payment_status }}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<p>No bills on file.</p>
+{% endif %}
+
+<br><br>
+
+<p align="right">
+
+Generated on {{ generated_on|date:"d-m-Y H:i" }}<br><br>
+
+_____________________<br>
+
+Authorized Signature
+
+</p>
+
+</body>
+
+</html>

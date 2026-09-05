@@ -1,0 +1,86 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Ambulance Fleet</h2>
+        <div>
+            <a href="{% url 'ambulance_tracker' %}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-geo-alt-fill"></i> Live Tracker
+            </a>
+            <a href="{% url 'add_ambulance' %}" class="btn btn-primary">
+                + Add Ambulance
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Available</h5>
+                    <h2 class="text-success">{{ available_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">On Duty</h5>
+                    <h2 class="text-warning">{{ on_duty_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Total</h5>
+                    <h2>{{ ambulances.count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Vehicle #</th>
+                <th>Driver</th>
+                <th>Phone</th>
+                <th>Branch</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for a in ambulances %}
+        <tr>
+            <td>{{ a.vehicle_number }}</td>
+            <td>{{ a.driver_name }}</td>
+            <td>{{ a.driver_phone }}</td>
+            <td>{{ a.branch|default:"-" }}</td>
+            <td>
+                {% if a.status == "Available" %}
+                <span class="badge bg-success">Available</span>
+                {% elif a.status == "On Duty" %}
+                <span class="badge bg-warning text-dark">On Duty</span>
+                {% else %}
+                <span class="badge bg-secondary">Maintenance</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'update_ambulance' a.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_ambulance' a.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center">No ambulances added yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

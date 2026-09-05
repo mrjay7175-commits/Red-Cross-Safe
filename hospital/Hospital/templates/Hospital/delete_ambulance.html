@@ -1,0 +1,17 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body text-center">
+            <h3>Delete Ambulance</h3>
+            <p>Are you sure you want to delete <strong>{{ ambulance.vehicle_number }}</strong>?</p>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="{% url 'ambulance_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

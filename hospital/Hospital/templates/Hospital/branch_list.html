@@ -1,0 +1,46 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Hospital Branches</h2>
+        <a href="{% url 'add_branch' %}" class="btn btn-primary">+ Add Branch</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Patients</th>
+                <th>Doctors</th>
+                <th>Main?</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for b in branches %}
+        <tr>
+            <td>{{ b.name }}</td>
+            <td>{{ b.address|default:"-" }}</td>
+            <td>{{ b.phone|default:"-" }}</td>
+            <td>{{ b.patient_count }}</td>
+            <td>{{ b.doctor_count }}</td>
+            <td>{% if b.is_main %}<span class="badge bg-primary">Main</span>{% endif %}</td>
+            <td>
+                <a href="{% url 'update_branch' b.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_branch' b.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center">No branches added yet - by default all patients/doctors belong to no specific branch.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

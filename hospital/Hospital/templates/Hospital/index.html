@@ -1,0 +1,50 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="row">
+
+<div class="col-md-4">
+<div class="card bg-primary text-white">
+<div class="card-body">
+<h2>{{ total }}</h2>
+<h5>Total Patients</h5>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card bg-success text-white">
+<div class="card-body">
+<h2>{{ admitted }}</h2>
+<h5>Admitted</h5>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card bg-danger text-white">
+<div class="card-body">
+<h2>{{ discharged }}</h2>
+<h5>Discharged</h5>
+</div>
+</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="text-center">
+
+<a href="{% url 'add_patient' %}" class="btn btn-success btn-lg">
+➕ Add Patient
+</a>
+
+<a href="{% url 'view_patient' %}" class="btn btn-primary btn-lg">
+📋 View Patients
+</a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Insurance Claims</h2>
+        <a href="{% url 'add_insurance_claim' %}" class="btn btn-primary">+ New Claim</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Patient</th>
+                <th>Provider</th>
+                <th>Policy #</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in claims %}
+        <tr>
+            <td>{{ c.patient.name }}</td>
+            <td>{{ c.insurance_provider }}</td>
+            <td>{{ c.policy_number }}</td>
+            <td>₹ {{ c.claim_amount }}</td>
+            <td>
+                {% if c.status == "Approved" %}
+                <span class="badge bg-success">Approved</span>
+                {% elif c.status == "Rejected" %}
+                <span class="badge bg-danger">Rejected</span>
+                {% elif c.status == "Pending" %}
+                <span class="badge bg-warning text-dark">Pending</span>
+                {% else %}
+                <span class="badge bg-info text-dark">Submitted</span>
+                {% endif %}
+            </td>
+            <td>{{ c.submitted_date }}</td>
+            <td>
+                <a href="{% url 'update_insurance_claim' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_insurance_claim' c.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center">No insurance claims yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if claims.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if claims.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ claims.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ claims.number }} of {{ claims.paginator.num_pages }}</span></li>
+            {% if claims.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ claims.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+
+{% endblock %}

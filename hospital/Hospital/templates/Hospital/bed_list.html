@@ -1,0 +1,120 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Bed Management</h2>
+
+        <div>
+            <a href="{% url 'add_ward' %}" class="btn btn-outline-primary me-2">
+                + Add Ward
+            </a>
+            <a href="{% url 'add_bed' %}" class="btn btn-primary">
+                + Add Bed
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Total Beds</h5>
+                    <h2>{{ total_beds }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Occupied</h5>
+                    <h2 class="text-danger">{{ occupied_beds }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-muted">Available</h5>
+                    <h2 class="text-success">{{ available_beds }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for ward in wards %}
+
+    <div class="card mb-3 shadow-sm">
+
+        <div class="card-header bg-dark text-white">
+            {{ ward.name }} {% if ward.floor %}<small>(Floor {{ ward.floor }})</small>{% endif %}
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                {% for bed in ward.beds.all %}
+
+                <div class="col-md-3">
+
+                    <div class="card {% if bed.is_occupied %}border-danger{% else %}border-success{% endif %}">
+
+                        <div class="card-body">
+
+                            <h6>Bed {{ bed.bed_number }}</h6>
+
+                            {% if bed.is_occupied %}
+
+                                <span class="badge bg-danger mb-2">Occupied</span>
+                                <p class="mb-2 small">{{ bed.patient.name }}</p>
+
+                                <form method="POST" action="{% url 'release_bed' bed.id %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger w-100">Release</button>
+                                </form>
+
+                            {% else %}
+
+                                <span class="badge bg-success mb-2">Available</span>
+
+                                <form method="POST" action="{% url 'assign_bed' bed.id %}">
+                                    {% csrf_token %}
+                                    <select name="patient" class="form-select form-select-sm mb-2" required>
+                                        <option value="">Assign patient...</option>
+                                        {% for p in available_patients %}
+                                        <option value="{{ p.id }}">{{ p.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="btn btn-sm btn-outline-success w-100">Assign</button>
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+                <p class="text-muted">No beds in this ward yet.</p>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <p class="text-muted">No wards created yet. Start by adding a ward, then add beds to it.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

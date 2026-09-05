@@ -1,0 +1,46 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5" style="max-width:500px;">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4>Pay Bill #{{ bill.id }}</h4>
+        </div>
+
+        <div class="card-body">
+
+            <p><b>Patient:</b> {{ bill.patient.name }}</p>
+            <p><b>Amount Due:</b> ₹ {{ bill.total_amount }}</p>
+
+            <div class="alert alert-secondary small">
+                <i class="bi bi-info-circle"></i>
+                This is a demo payment screen (no real gateway is connected).
+                Clicking "Confirm Payment" simply marks this bill as paid so
+                you can see the full workflow. To accept real payments,
+                wire up a gateway like Razorpay or Stripe here.
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-credit-card-fill"></i> Confirm Payment (Demo)
+                </button>
+
+            </form>
+
+            <a href="{% url 'bill_detail' bill.id %}" class="btn btn-secondary w-100 mt-2">
+                Cancel
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

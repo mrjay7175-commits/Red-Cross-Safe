@@ -1,0 +1,116 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <h2 class="mb-4"><i class="bi bi-graph-up-arrow"></i> Hospital Analytics</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Average Bill Amount</h6>
+                    <h2>₹ {{ avg_bill_amount }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Appointment Completion Rate</h6>
+                    <h2>{{ completion_rate }}%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Appointments</h6>
+                    <h2>{{ total_appointments }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-6 mb-4">
+            <div class="chart-box">
+                <h5 class="mb-3">Patient Admissions (Last 12 Months)</h5>
+                <canvas id="admissionsChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-3 mb-4">
+            <div class="chart-box">
+                <h5 class="mb-3">Gender Split</h5>
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-3 mb-4">
+            <div class="chart-box">
+                <h5 class="mb-3">Doctors by Department</h5>
+                <canvas id="deptChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="chart-box">
+                <h5 class="mb-3">Top 5 Diseases Treated</h5>
+                <canvas id="diseaseChart" height="120"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+new Chart(document.getElementById("admissionsChart"), {
+    type: "line",
+    data: {
+        labels: {{ admission_labels_json|safe }},
+        datasets: [{
+            label: "Patients Admitted",
+            data: {{ admission_counts_json|safe }},
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: { responsive: true }
+});
+
+new Chart(document.getElementById("genderChart"), {
+    type: "doughnut",
+    data: {
+        labels: {{ gender_labels_json|safe }},
+        datasets: [{ data: {{ gender_counts_json|safe }} }]
+    },
+    options: { responsive: true, plugins: { legend: { position: "bottom" } } }
+});
+
+new Chart(document.getElementById("deptChart"), {
+    type: "pie",
+    data: {
+        labels: {{ dept_labels_json|safe }},
+        datasets: [{ data: {{ dept_counts_json|safe }} }]
+    },
+    options: { responsive: true, plugins: { legend: { position: "bottom" } } }
+});
+
+new Chart(document.getElementById("diseaseChart"), {
+    type: "bar",
+    data: {
+        labels: {{ disease_labels_json|safe }},
+        datasets: [{ label: "Patients", data: {{ disease_counts_json|safe }} }]
+    },
+    options: { responsive: true }
+});
+
+</script>
+
+{% endblock %}

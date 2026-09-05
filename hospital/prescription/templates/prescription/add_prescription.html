@@ -1,0 +1,83 @@
+{% extends "Hospital/base.html" %}
+
+{% block title %}Add Prescription{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h3>Add New Prescription</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <hr>
+
+                <h4 class="mb-3">Medicines</h4>
+
+                {{ formset.management_form }}
+
+                <table class="table table-bordered">
+
+                    <thead class="table-light">
+
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Morning</th>
+                        <th>Afternoon</th>
+                        <th>Night</th>
+                        <th>Days</th>
+                        <th>Instruction</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for medicine_form in formset %}
+
+                    <tr>
+
+                        <td>{{ medicine_form.medicine }}</td>
+                        <td>{{ medicine_form.dosage }}</td>
+                        <td>{{ medicine_form.morning }}</td>
+                        <td>{{ medicine_form.afternoon }}</td>
+                        <td>{{ medicine_form.night }}</td>
+                        <td>{{ medicine_form.days }}</td>
+                        <td>{{ medicine_form.instruction }}</td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <button type="submit" class="btn btn-success">
+                    Save Prescription
+                </button>
+
+                <a href="{% url 'prescription_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

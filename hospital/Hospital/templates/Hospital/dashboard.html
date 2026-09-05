@@ -1,0 +1,506 @@
+{% extends 'Hospital/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Dashboard Cards -->
+
+    <div class="row g-4">
+
+        <!-- Total Patients -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-blue shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-people-fill fs-2"></i>
+
+                    <h6 class="mt-2">Patients</h6>
+
+                    <h2>{{ total_patients }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Total Doctors -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-green shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-person-badge-fill fs-2"></i>
+
+                    <h6 class="mt-2">Doctors</h6>
+
+                    <h2>{{ total_doctors }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Admitted -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-orange shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-hospital-fill fs-2"></i>
+
+                    <h6 class="mt-2">Admitted</h6>
+
+                    <h2>{{ admitted }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Discharged -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-purple shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-check-circle-fill fs-2"></i>
+
+                    <h6 class="mt-2">Discharged</h6>
+
+                    <h2>{{ discharged }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bills -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-danger shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-receipt-cutoff fs-2"></i>
+
+                    <h6 class="mt-2">Bills</h6>
+
+                    <h2>{{ total_bills }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Revenue -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-success shadow">
+
+                <div class="card-body text-center text-white">
+
+                    <i class="bi bi-cash-stack fs-2"></i>
+
+                    <h6 class="mt-2">Revenue</h6>
+
+                    <h4>₹ {{ revenue }}</h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Low Stock -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-warning shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-exclamation-triangle-fill fs-2"></i>
+
+                    <h6 class="mt-2">Low Stock Meds</h6>
+
+                    <h2>{{ low_stock_count }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Bed Occupancy -->
+
+        <div class="col-lg-2 col-md-4">
+
+            <div class="card dashboard-card bg-purple shadow">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-hospital fs-2"></i>
+
+                    <h6 class="mt-2">Beds Occupied</h6>
+
+                    <h2>{{ occupied_beds }}/{{ total_beds }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-6">
+
+            <div class="chart-box">
+
+                <h4 class="mb-4">Revenue (Last 6 Months)</h4>
+
+                <canvas id="revenueChart" height="120"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="chart-box">
+
+                <h4 class="mb-4">Patient Status</h4>
+
+                <canvas id="statusChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="chart-box">
+
+                <h4 class="mb-4">Appointments</h4>
+
+                <canvas id="appointmentChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- Recent Patients -->
+
+    <div class="recent-box mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h4 class="mb-0">Recent Patients</h4>
+
+            <a href="{% url 'view_patient' %}" class="btn btn-primary">
+                View All
+            </a>
+
+        </div>
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Status</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for patient in patients %}
+
+                <tr>
+
+                    <td>{{ patient.id }}</td>
+
+                    <td>{{ patient.name }}</td>
+
+                    <td>{{ patient.age }}</td>
+
+                    <td>{{ patient.gender }}</td>
+
+                    <td>
+
+                        {% if patient.status == "Admitted" %}
+                            <span class="badge bg-success">
+                                {{ patient.status }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                {{ patient.status }}
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'patient_detail' patient.id %}"
+                           class="btn btn-sm btn-info">
+                            View
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6" class="text-center">
+                        No Patients Available
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- Recent Bills -->
+
+    <div class="recent-box mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h4 class="mb-0">Recent Bills</h4>
+
+            <a href="{% url 'bill_list' %}" class="btn btn-success">
+                View All
+            </a>
+
+        </div>
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Total</th>
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for bill in recent_bills %}
+
+                <tr>
+
+                    <td>{{ bill.id }}</td>
+
+                    <td>{{ bill.patient }}</td>
+
+                    <td>{{ bill.doctor }}</td>
+
+                    <td>₹ {{ bill.total_amount }}</td>
+
+                    <td>{{ bill.bill_date }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center">
+
+                        No Bills Available
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+        </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const revenueChart = document.getElementById("revenueChart");
+
+if(revenueChart){
+
+new Chart(revenueChart,{
+
+type:"bar",
+
+data:{
+
+labels: {{ revenue_labels_json|safe }},
+
+datasets:[{
+
+label:"Revenue (₹)",
+
+data: {{ revenue_totals_json|safe }},
+
+borderWidth:2
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+
+display:true
+
+}
+
+}
+
+}
+
+});
+
+}
+
+const statusChart = document.getElementById("statusChart");
+
+if(statusChart){
+
+new Chart(statusChart,{
+
+type:"pie",
+
+data:{
+
+labels:["Admitted","Discharged"],
+
+datasets:[{
+
+data:[{{ admitted }},{{ discharged }}]
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+}
+
+});
+
+}
+
+const appointmentChart = document.getElementById("appointmentChart");
+
+if(appointmentChart){
+
+new Chart(appointmentChart,{
+
+type:"doughnut",
+
+data:{
+
+labels: {{ appointment_status_labels_json|safe }},
+
+datasets:[{
+
+data: {{ appointment_status_counts_json|safe }}
+
+}]
+
+},
+
+options:{
+
+responsive:true,
+
+plugins:{
+
+legend:{
+
+position:"bottom"
+
+}
+
+}
+
+}
+
+});
+
+}
+
+</script>
+
+{% endblock %}

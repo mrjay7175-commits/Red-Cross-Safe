@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+
+body{
+font-family:Helvetica;
+font-size:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table,th,td{
+border:1px solid black;
+}
+
+th,td{
+padding:8px;
+text-align:left;
+}
+
+h1,h2{
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Hospital Management System</h1>
+
+<h2>Medical Bill</h2>
+
+<table>
+
+<tr>
+<th>Bill ID</th>
+<td>{{ bill.id }}</td>
+</tr>
+
+<tr>
+<th>Patient</th>
+<td>{{ bill.patient }}</td>
+</tr>
+
+<tr>
+<th>Doctor</th>
+<td>{{ bill.doctor }}</td>
+</tr>
+
+<tr>
+<th>Consultation Fee</th>
+<td>₹ {{ bill.consultation_fee }}</td>
+</tr>
+
+<tr>
+<th>Medicine Charge</th>
+<td>₹ {{ bill.medicine_charge }}</td>
+</tr>
+
+<tr>
+<th>Test Charge</th>
+<td>₹ {{ bill.test_charge }}</td>
+</tr>
+
+<tr>
+<th>Other Charge</th>
+<td>₹ {{ bill.other_charge }}</td>
+</tr>
+
+<tr>
+<th>Total Amount</th>
+<td><b>₹ {{ bill.total_amount }}</b></td>
+</tr>
+
+<tr>
+<th>Date</th>
+<td>{{ bill.bill_date }}</td>
+</tr>
+
+</table>
+
+<br><br>
+
+<p align="right">
+
+_____________________<br>
+
+Authorized Signature
+
+</p>
+
+</body>
+
+</html>

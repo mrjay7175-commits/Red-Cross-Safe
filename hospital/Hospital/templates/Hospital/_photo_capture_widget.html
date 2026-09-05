@@ -1,0 +1,124 @@
+{% comment %}
+Enhances a Django-rendered ImageField input (expects id="id_photo") with:
+1. A drag-and-drop zone
+2. A "Capture from Webcam" button
+Include this AFTER {{ form.as_p }} (or wherever id_photo has rendered).
+{% endcomment %}
+
+<div class="mb-3">
+
+    <div id="photoDropzone" class="border border-2 border-dashed rounded p-3 text-center text-muted" style="cursor:pointer;">
+        <i class="bi bi-cloud-arrow-up-fill fs-3"></i>
+        <p class="mb-0 small">Drag &amp; drop a photo here, or click to browse (uses the Photo field above)</p>
+    </div>
+
+    <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#webcamModal">
+        <i class="bi bi-camera-fill"></i> Capture from Webcam
+    </button>
+
+    <img id="photoPreview" class="img-thumbnail mt-2 d-none" style="max-height:150px;">
+
+</div>
+
+<!-- Webcam Capture Modal -->
+<div class="modal fade" id="webcamModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Capture Photo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <video id="webcamVideo" autoplay playsinline class="w-100 rounded"></video>
+                <canvas id="webcamCanvas" class="d-none"></canvas>
+                <p id="webcamError" class="text-danger small mt-2 d-none">Could not access the camera - check browser permissions.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="webcamCaptureBtn">
+                    <i class="bi bi-camera-fill"></i> Capture
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    const fileInput = document.getElementById("id_photo");
+    if(!fileInput) return;
+
+    const dropzone = document.getElementById("photoDropzone");
+    const preview = document.getElementById("photoPreview");
+
+    function showPreview(file){
+        if(!file) return;
+        const url = URL.createObjectURL(file);
+        preview.src = url;
+        preview.classList.remove("d-none");
+    }
+
+    dropzone.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => showPreview(fileInput.files[0]));
+
+    dropzone.addEventListener("dragover", function(e){
+        e.preventDefault();
+        dropzone.classList.add("border-primary");
+    });
+    dropzone.addEventListener("dragleave", function(){
+        dropzone.classList.remove("border-primary");
+    });
+    dropzone.addEventListener("drop", function(e){
+        e.preventDefault();
+        dropzone.classList.remove("border-primary");
+        if(e.dataTransfer.files.length){
+            fileInput.files = e.dataTransfer.files;
+            showPreview(fileInput.files[0]);
+        }
+    });
+
+    // Webcam capture
+    const video = document.getElementById("webcamVideo");
+    const canvas = document.getElementById("webcamCanvas");
+    const captureBtn = document.getElementById("webcamCaptureBtn");
+    const webcamError = document.getElementById("webcamError");
+    let stream = null;
+
+    const webcamModal = document.getElementById("webcamModal");
+    webcamModal.addEventListener("shown.bs.modal", function(){
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(s){
+                stream = s;
+                video.srcObject = s;
+            })
+            .catch(function(){
+                webcamError.classList.remove("d-none");
+            });
+    });
+
+    webcamModal.addEventListener("hidden.bs.modal", function(){
+        if(stream){
+            stream.getTracks().forEach(t => t.stop());
+            stream = null;
+        }
+    });
+
+    captureBtn.addEventListener("click", function(){
+        if(!stream) return;
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+
+        canvas.toBlob(function(blob){
+            const file = new File([blob], "webcam-capture.png", { type: "image/png" });
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+            showPreview(file);
+
+            const modalInstance = bootstrap.Modal.getInstance(webcamModal);
+            modalInstance.hide();
+        }, "image/png");
+    });
+})();
+</script>

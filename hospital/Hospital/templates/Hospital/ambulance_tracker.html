@@ -1,0 +1,125 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Live Ambulance Tracker</h2>
+        <a href="{% url 'ambulance_list' %}" class="btn btn-secondary">Back to Fleet</a>
+    </div>
+
+    <div class="alert alert-secondary small">
+        <i class="bi bi-info-circle"></i>
+        This map re-reads each ambulance's stored coordinates every 5 seconds.
+        There's no real GPS device connected in this demo - use the "Update
+        Location" form on any ambulance to simulate it moving. In a real
+        deployment, a driver's phone/GPS unit would call this same update
+        endpoint automatically every few seconds.
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-8">
+            <div id="map" style="height:520px;border-radius:8px;"></div>
+        </div>
+
+        <div class="col-lg-4">
+
+            {% for a in ambulances %}
+            <div class="card mb-2">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <b>{{ a.vehicle_number }}</b>
+                            {% if a.status == "Available" %}
+                            <span class="badge bg-success">Available</span>
+                            {% elif a.status == "On Duty" %}
+                            <span class="badge bg-warning text-dark">On Duty</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Maintenance</span>
+                            {% endif %}
+                            <div class="text-muted small">{{ a.driver_name }}</div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#loc-{{ a.id }}">
+                            Update
+                        </button>
+                    </div>
+
+                    <div class="collapse mt-2" id="loc-{{ a.id }}">
+                        <form method="POST" action="{% url 'update_ambulance_location' a.id %}" class="row g-1">
+                            {% csrf_token %}
+                            <div class="col-4">
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="Available" {% if a.status == "Available" %}selected{% endif %}>Available</option>
+                                    <option value="On Duty" {% if a.status == "On Duty" %}selected{% endif %}>On Duty</option>
+                                    <option value="Maintenance" {% if a.status == "Maintenance" %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <input type="number" step="0.0001" name="latitude" value="{{ a.latitude }}" class="form-control form-control-sm" placeholder="Lat">
+                            </div>
+                            <div class="col-3">
+                                <input type="number" step="0.0001" name="longitude" value="{{ a.longitude }}" class="form-control form-control-sm" placeholder="Lng">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-sm btn-success w-100">Go</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No ambulances yet.</p>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+const initialMarkers = {{ markers_json|safe }};
+
+const map = L.map('map').setView(
+    initialMarkers.length ? [initialMarkers[0].lat, initialMarkers[0].lng] : [28.6139, 77.2090],
+    12
+);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let markerLayer = {};
+
+function renderMarkers(markers){
+    markers.forEach(function(m){
+        const label = m.vehicle_number + " (" + m.status + ")";
+        if(markerLayer[m.id]){
+            markerLayer[m.id].setLatLng([m.lat, m.lng]);
+            markerLayer[m.id].setPopupContent(label);
+        } else {
+            markerLayer[m.id] = L.marker([m.lat, m.lng]).addTo(map).bindPopup(label);
+        }
+    });
+}
+
+renderMarkers(initialMarkers);
+
+// Poll every 5 seconds for updated positions
+setInterval(function(){
+    fetch("{% url 'ambulance_positions_json' %}")
+        .then(r => r.json())
+        .then(renderMarkers)
+        .catch(() => {});
+}, 5000);
+
+</script>
+
+{% endblock %}

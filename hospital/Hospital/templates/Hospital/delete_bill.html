@@ -1,0 +1,41 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<h3>Delete Bill</h3>
+
+<p>
+
+Are you sure you want to delete
+
+<b>{{ bill.patient }}</b> bill?
+
+</p>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<button class="btn btn-danger">
+Delete
+</button>
+
+<a href="{% url 'bill_list' %}" class="btn btn-secondary">
+Cancel
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

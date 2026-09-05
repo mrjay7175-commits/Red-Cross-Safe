@@ -1,0 +1,43 @@
+{% extends 'Hospital/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>Medicine Details</h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <p><b>Name:</b> {{ medicine.name }}</p>
+
+            <p><b>Company:</b> {{ medicine.company }}</p>
+
+            <p><b>Category:</b> {{ medicine.category }}</p>
+
+            <p><b>Price:</b> ₹ {{ medicine.price }}</p>
+
+            <p><b>Quantity:</b> {{ medicine.quantity }}</p>
+
+            <p><b>Expiry Date:</b> {{ medicine.expiry_date }}</p>
+
+            <p><b>Description:</b> {{ medicine.description }}</p>
+
+            <a href="{% url 'medicine_list' %}" class="btn btn-primary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
